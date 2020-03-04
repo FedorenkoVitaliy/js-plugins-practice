@@ -1,13 +1,19 @@
-function _createModal({title, content, maxWidth= '600px', closable= true}){
+function _createModal(options){
+    const {
+        title = 'Modal Title',
+        content = '',
+        maxWidth = '600px',
+        closable = true
+    } = options;
     const modal = document.createElement ('div');
     const modalClose = closable ?
-        `<span class="modal__header-close">
+        `<span class="modal__header-close" data-close>
             &times;
         </span>`:
         '';
     modal.classList.add('vmodal');
     modal.insertAdjacentHTML('afterbegin', `
-        <div class="modal__overlay">
+        <div class="modal__overlay" data-close>
             <div class="modal__window" style="max-width: ${maxWidth}">
                 <div class="modal__header">
                     <span class="modal__header-title">
@@ -48,9 +54,15 @@ Task
 * animate.css
 * */
 
-$.modal = function ({destroy, ...options}) {
+$.modal = function (options) {
     const ANIMATION_SPEED = 2000;
     const $modal = _createModal(options);
+
+    $modal.addEventListener('click', event => {
+        //console.log('Clicked');
+        console.log(!!event.target.dataset.close);
+    });
+
     return {
         open() {
             $modal.classList.add('open');
@@ -64,7 +76,7 @@ $.modal = function ({destroy, ...options}) {
             }, ANIMATION_SPEED)
         },
         destroy() {
-            destroy();
+            console.log('destroy')
         }
     }
 };
