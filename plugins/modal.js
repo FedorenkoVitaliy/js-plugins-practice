@@ -28,6 +28,7 @@ function _createModal(){
 }
 
 $.modal = function (options) {
+    const ANIMATION_SPEED = 2000;
     const $modal = _createModal(options);
 
     return {
@@ -35,7 +36,11 @@ $.modal = function (options) {
             $modal.classList.add('open');
         },
         close() {
+            $modal.classList.add('hide');
             $modal.classList.remove('open');
+            setTimeout(() => {
+                $modal.classList.remove('hide');
+            }, ANIMATION_SPEED)
         },
         destroy() {}
     }
