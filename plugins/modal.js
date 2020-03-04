@@ -1,20 +1,22 @@
-function _createModal(){
+function _createModal({title, content, maxWidth= '600px', closable= true}){
     const modal = document.createElement ('div');
+    const modalClose = closable ?
+        `<span class="modal__header-close">
+            &times;
+        </span>`:
+        '';
     modal.classList.add('vmodal');
     modal.insertAdjacentHTML('afterbegin', `
         <div class="modal__overlay">
-            <div class="modal__window">
+            <div class="modal__window" style="max-width: ${maxWidth}">
                 <div class="modal__header">
                     <span class="modal__header-title">
-                        Modal title
+                      ${title}
                     </span>
-                    <span class="modal__header-close">
-                        &times;
-                    </span>
+                    ${modalClose} 
                 </div>
                 <div class="modal__body">
-                    <p>Lorem ipsum dolor sit.</p>
-                    <p>Molestias nostrum quae reiciendis?</p>
+                    ${content}
                 </div>
                 <div class="modal__footer">
                     <button>Ok</button>
@@ -27,10 +29,28 @@ function _createModal(){
     return modal;
 }
 
-$.modal = function (options) {
+/*
+Task
+* Parameters:
+*   title:string +
+*   closable: boolean +
+*   content: string +
+*   width: string('400px') +
+*   destroy: void
+* overlay and close button
+* -------------------
+* public method setContent(html: string): void | PUBLIC
+* lifecycle hook
+*   - onClose(): void
+*   - onOpen(): void
+*   -beforeClose(): boolean
+* -------------------
+* animate.css
+* */
+
+$.modal = function ({destroy, ...options}) {
     const ANIMATION_SPEED = 2000;
     const $modal = _createModal(options);
-
     return {
         open() {
             $modal.classList.add('open');
@@ -40,8 +60,11 @@ $.modal = function (options) {
             $modal.classList.remove('open');
             setTimeout(() => {
                 $modal.classList.remove('hide');
+
             }, ANIMATION_SPEED)
         },
-        destroy() {}
+        destroy() {
+            destroy();
+        }
     }
 };
