@@ -1,1 +1,1 @@
-const $ = {};
+const modal = $.modal();
