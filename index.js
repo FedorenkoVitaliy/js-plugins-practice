@@ -1,9 +1,10 @@
 const modal = $.modal( {
-    title: 'Modal title',
+    title: 'Sed Modal',
     content: `
-        <p>Lorem ipsum dolor sit. 2</p>
+        <h4>Modal is working</h4>
         <p>Molestias nostrum quae reiciendis?</p>
+        <p>Lorem ipsum dolor sit amet.</p>
     `,
-    maxWidth: '500px',
-    //closable: false,
+    maxWidth: '400px',
+    closable: true,
 });
