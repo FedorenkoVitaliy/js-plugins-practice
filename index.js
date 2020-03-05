@@ -29,7 +29,7 @@ const toHTML = ({id, name, img}) => `
             <a href="#" class="btn btn--primary" data-btn="additional" data-id=${id}>
                 Дополнительно
             </a>
-            <a href="#" class="btn btn--danger" data-btn="remove">
+            <a href="#" class="btn btn--danger" data-btn="remove" data-id=${id}>
                 Удалить
             </a>
         </div>
@@ -56,34 +56,13 @@ const singerDetailsModal = $.modal({
         }
     ]
 });
-const confirmModal = $.modal({
-    title: 'You are shore?',
-    maxWidth: '400px',
-    closable: true,
-    footerButtons: [
-        {
-            text: 'Отменить',
-            type: 'success',
-            handler() {
-                confirmModal.close();
-            }
-        },
-        {
-            text: 'Закрыть',
-            type: 'danger',
-            handler() {
-                confirmModal.close();
-            }
-        }
-    ]
-});
 
 const listener = event => {
     event.preventDefault();
     const btnType = event.target.dataset.btn;
+    const id = event.target.dataset.id;
+    const queen = queens.find(q => q.id===id);
     if(btnType==='additional'){
-        const id = event.target.dataset.id;
-        const queen = queens.find(q => q.id===id);
         singerDetailsModal.setContent(`
             <h4>${queen.name}</h4>
             <p>${queen.description}</p>
@@ -91,8 +70,16 @@ const listener = event => {
         singerDetailsModal.open();
     }
     if(btnType==='remove'){
-        confirmModal.setContent(`<p>Вы действительно хотите удалить данную карточку?</p>`)
-        confirmModal.open();
+        $.confirm({
+            title: 'Вы уверены?',
+            content: `<p>Вы действительно хотите удалить карточку ${queen.name}?</p>`
+        })
+        .then(() => {
+            console.log('remove');
+        })
+        .catch(() => {
+            console.log('cancel');
+        })
     }
 };
 
