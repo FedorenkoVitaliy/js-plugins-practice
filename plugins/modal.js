@@ -27,13 +27,13 @@ function _createModal(options){
         footerButtons = []
     } = options;
     const modal = document.createElement ('div');
-    modal.classList.add('vmodal');
     const modalClose = closable ?
     `<span class="modal__header-close" data-close="true">
         &times;
     </span>`:
     '';
-    const buttons = footerButtons.map(button => `<button>${button.text}</button>`);
+    const footer = _createModalFooter(footerButtons);
+    modal.classList.add('vmodal');
     modal.insertAdjacentHTML('afterbegin', `
         <div class="modal__overlay" data-close="true">
             <div class="modal__window" style="max-width: ${maxWidth}">
@@ -49,7 +49,6 @@ function _createModal(options){
             </div>
         </div>
     `);
-    const footer = _createModalFooter(footerButtons);
     footer.appendAfter(modal.querySelector('[data-content]'));
     document.body.appendChild(modal);
     return modal;
