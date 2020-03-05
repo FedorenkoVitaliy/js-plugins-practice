@@ -1,4 +1,4 @@
-const queens = [
+let queens = [
     {
         id: '1',
         name: 'Sharon Del Adel',
@@ -75,10 +75,12 @@ const listener = event => {
             content: `<p>Вы действительно хотите удалить карточку ${queen.name}?</p>`
         })
         .then(() => {
-            console.log('remove');
+            queens = queens.filter(queen => queen.id !== id);
+            render();
         })
         .catch(() => {
             console.log('cancel');
+            render();
         })
     }
 };

@@ -15,14 +15,17 @@ $.confirm = (options) => {
                     }
                 },
                 {
-                    text: 'Закрыть',
+                    text: 'Подтвердить',
                     type: 'danger',
                     handler() {
                         modal.close();
                         resolve();
                     }
                 }
-            ]
+            ],
+            onClose(){
+                modal.destroy();
+            }
         });
 
         setTimeout(() => modal.open(), 100);
