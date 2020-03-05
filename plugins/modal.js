@@ -10,7 +10,7 @@ function _createModalFooter(buttons = []) {
             const $btn = document.createElement('button');
             $btn.textContent = btn.text;
             $btn.classList.add('btn');
-            $btn.classList.add(`btn-${btn.type || 'secondary'}`);
+            $btn.classList.add(`btn--${btn.type || ''}`);
             $btn.onclick= btn.handler || function(){};
             footer.appendChild($btn);
         });
@@ -23,19 +23,19 @@ function _createModal(options){
         title = 'Modal Title',
         content = '',
         maxWidth = '600px',
-        closable = true,
+        closable = false,
         footerButtons = []
     } = options;
     const modal = document.createElement ('div');
-    modal.classList.add('vmodal');
     const modalClose = closable ?
     `<span class="modal__header-close" data-close="true">
         &times;
     </span>`:
     '';
-    const buttons = footerButtons.map(button => `<button>${button.text}</button>`);
+    const footer = _createModalFooter(footerButtons);
+    modal.classList.add('vmodal');
     modal.insertAdjacentHTML('afterbegin', `
-        <div class="modal__overlay" data-close="true">
+        <div class="modal__overlay" data-close=${closable?'true':''}>
             <div class="modal__window" style="max-width: ${maxWidth}">
                 <div class="modal__header">
                     <span class="modal__header-title">
@@ -49,14 +49,13 @@ function _createModal(options){
             </div>
         </div>
     `);
-    const footer = _createModalFooter(footerButtons);
     footer.appendAfter(modal.querySelector('[data-content]'));
     document.body.appendChild(modal);
     return modal;
 }
 
 $.modal = function (options) {
-    const ANIMATION_SPEED = 2000;
+    const ANIMATION_SPEED = 500;
     let destroyed = false;
     const $modal = _createModal(options);
     const modal = {
@@ -70,7 +69,9 @@ $.modal = function (options) {
             $modal.classList.remove('open');
             setTimeout(() => {
                 $modal.classList.remove('hide');
-
+                if(typeof options.onClose === 'function'){
+                    options.onClose();
+                }
             }, ANIMATION_SPEED)
         },
     };
@@ -85,9 +86,11 @@ $.modal = function (options) {
     return {
         ...modal,
         destroy() {
-            $modal.parentNode.removeChild($modal);
-            $modal.removeEventListener('click', listener);
-            destroyed = true;
+            if($modal.parentNode){
+                $modal.parentNode.removeChild($modal);
+                $modal.removeEventListener('click', listener);
+                destroyed = true;
+            }
         },
         setContent(html) {
             $modal.querySelector('[data-content]').innerHTML = html;
